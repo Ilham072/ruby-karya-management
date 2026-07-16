@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'google_drive_sync' => [
+        'enabled' => env('GOOGLE_DRIVE_SYNC_ENABLED', false),
+        
+    ],
+
 ];

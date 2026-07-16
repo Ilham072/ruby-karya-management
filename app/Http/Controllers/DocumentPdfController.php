@@ -6,6 +6,7 @@ use App\Models\DocumentArchive;
 use App\Models\Invoice;
 use App\Models\Receipt;
 use App\Support\NumberToWords;
+use App\Services\DriveArchiveService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -39,13 +40,20 @@ class DocumentPdfController extends Controller
             'Invoice-'.$invoice->invoice_number
         ).'.pdf';
 
+        $drivePath = $this->driveArchiveService->syncPdf(
+            documentType: 'invoice',
+            fileName: $fileName,
+            contents: $content,
+            documentDate: $invoice->invoice_date,
+        );
+
         $year = $invoice->invoice_date->format('Y');
 
         $path = "documents/invoices/{$year}/{$fileName}";
 
         Storage::disk('public')->put($path, $content);
 
-        DocumentArchive::updateOrCreate(
+        $archive = DocumentArchive::updateOrCreate(
             [
                 'document_type' => 'invoice',
                 'document_id' => $invoice->id,
@@ -58,6 +66,13 @@ class DocumentPdfController extends Controller
                 'created_by' => auth()->id(),
             ]
         );
+
+        if ($drivePath) {
+            $archive->update([
+                'drive_folder_id' => dirname($drivePath),
+                'archived_at' => now(),
+            ]);
+        }
 
         return Storage::disk('public')->response(
             $path,
@@ -96,6 +111,13 @@ class DocumentPdfController extends Controller
             'Kwitansi-'.$receipt->receipt_number
         ).'.pdf';
 
+        $drivePath = $this->driveArchiveService->syncPdf(
+            documentType: 'receipt',
+            fileName: $fileName,
+            contents: $content,
+            documentDate: $receipt->receipt_date,
+        );
+
         $year = $receipt->receipt_date->format('Y');
 
         $path = "documents/receipts/{$year}/{$fileName}";
@@ -106,7 +128,7 @@ class DocumentPdfController extends Controller
             'pdf_file_path' => $path,
         ]);
 
-        DocumentArchive::updateOrCreate(
+        $archive = DocumentArchive::updateOrCreate(
             [
                 'document_type' => 'receipt',
                 'document_id' => $receipt->id,
@@ -119,6 +141,13 @@ class DocumentPdfController extends Controller
                 'created_by' => auth()->id(),
             ]
         );
+
+        if ($drivePath) {
+            $archive->update([
+                'drive_folder_id' => dirname($drivePath),
+                'archived_at' => now(),
+            ]);
+        }
 
         return Storage::disk('public')->response(
             $path,
@@ -154,5 +183,10 @@ class DocumentPdfController extends Controller
             '-',
             $value
         ) ?: 'dokumen';
+    }
+
+    public function __construct(
+        private readonly DriveArchiveService $driveArchiveService
+    ) {
     }
 }

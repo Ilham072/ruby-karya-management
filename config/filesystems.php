@@ -60,6 +60,15 @@ return [
             'report' => false,
         ],
 
+        'google_drive_sync' => [
+            'driver' => 'local',
+            'root' => env(
+                'GOOGLE_DRIVE_SYNC_PATH',
+                storage_path('app/drive-archive')
+            ),
+            'throw' => true,
+        ],
+
     ],
 
     /*

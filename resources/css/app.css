@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form-input {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+.form-input:focus {
+    border-color: #ffb800;
+    outline: none;
+    box-shadow: 0 0 0 1px #ffb800;
+}

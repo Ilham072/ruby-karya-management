@@ -10,6 +10,7 @@ import {
     Menu,
     ReceiptText,
     Settings,
+    UserCog,
     UserCircle,
     UsersRound,
     WalletCards,
@@ -17,7 +18,7 @@ import {
 } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
-const navigation = [
+const mainNavigation = [
     {
         label: 'Dashboard',
         href: '/dashboard',
@@ -61,6 +62,17 @@ export default function AuthenticatedLayout({
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const page = usePage();
     const user = (page.props as any).auth.user;
+    const navigation =
+    user.role === 'super_admin'
+        ? [
+              ...mainNavigation,
+              {
+                  label: 'Pengguna',
+                  href: '/users',
+                  icon: UserCog,
+              },
+          ]
+        : mainNavigation;
     const currentPath = new URL(page.url, window.location.origin).pathname;
 
     const [sidebarOpen, setSidebarOpen] = useState(false);

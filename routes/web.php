@@ -9,6 +9,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\DocumentPdfController;
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\UserManagementController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -79,6 +80,18 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/archives/{archive}/sync', [ArchiveController::class, 'sync'])
         ->name('archives.sync');
+    
+    Route::get('/users', [UserManagementController::class, 'index'])
+        ->name('users.index');
+
+    Route::post('/users', [UserManagementController::class, 'store'])
+        ->name('users.store');
+
+    Route::patch('/users/{user}', [UserManagementController::class, 'update'])
+        ->name('users.update');
+
+    Route::patch('/users/{user}/password', [UserManagementController::class, 'resetPassword',])
+        ->name('users.password');
     
 });
 

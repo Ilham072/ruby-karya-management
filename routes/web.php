@@ -10,6 +10,7 @@ use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\DocumentPdfController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\CompanySettingController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -93,6 +94,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/users/{user}/password', [UserManagementController::class, 'resetPassword',])
         ->name('users.password');
     
+    Route::get('/company-settings', [CompanySettingController::class, 'edit'])
+        ->name('company-settings.edit');
+
+    Route::post('/company-settings', [CompanySettingController::class, 'update'])
+        ->name('company-settings.update');
 });
 
 require __DIR__.'/auth.php';

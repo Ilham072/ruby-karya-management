@@ -161,11 +161,18 @@ export default function AuthenticatedLayout({
 
                 <div className="border-t border-white/10 p-4">
                     <Link
-                        href="/profile"
+                        href={
+                            user.role === 'super_admin'
+                            ? '/company-settings'
+                            : '/profile'
+                        }
                         className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white/65 hover:bg-white/10 hover:text-white"
-                    >
+>
                         <Settings className="h-5 w-5" />
-                        Pengaturan
+
+                        {user.role === 'super_admin'
+                            ? 'Pengaturan Perusahaan'
+                            : 'Pengaturan'}
                     </Link>
 
                     <Link

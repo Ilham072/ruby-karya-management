@@ -65,16 +65,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/receipts', [ReceiptController::class, 'index'])
         ->name('receipts.index');
 
-    Route::get(
-    '/invoices/{invoice}/pdf', [DocumentPdfController::class, 'invoice'])
+    Route::get('/invoices/{invoice}/pdf', [DocumentPdfController::class, 'invoice'])
         ->name('invoices.pdf');
 
-    Route::get(
-    '/receipts/{receipt}/pdf', [DocumentPdfController::class, 'receipt'])
+    Route::get('/receipts/{receipt}/pdf', [DocumentPdfController::class, 'receipt'])
         ->name('receipts.pdf');
         
     Route::get('/archives', [ArchiveController::class, 'index'])
         ->name('archives.index');
+
+    Route::get('/archives/{archive}/open', [ArchiveController::class, 'open'])
+        ->name('archives.open');
+
+    Route::post('/archives/{archive}/sync', [ArchiveController::class, 'sync'])
+        ->name('archives.sync');
     
 });
 

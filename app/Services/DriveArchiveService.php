@@ -56,4 +56,45 @@ class DriveArchiveService
             return null;
         }
     }
+    public function syncPaymentProof(
+    string $fileName,
+    string $contents,
+    CarbonInterface $paymentDate
+): ?string {
+    if (!config('services.google_drive_sync.enabled')) {
+        return null;
+    }
+
+    $safeFileName = preg_replace(
+        '/[\\\\\/:*?"<>|]+/',
+        '-',
+        $fileName
+    );
+
+    $relativePath = sprintf(
+        'Bukti Pembayaran/%s/%s/%s',
+        $paymentDate->format('Y'),
+        $paymentDate->format('m'),
+        $safeFileName
+    );
+
+    try {
+        Storage::disk('google_drive_sync')->put(
+            $relativePath,
+            $contents
+        );
+
+        return $relativePath;
+    } catch (Throwable $exception) {
+        Log::error(
+            'Sinkronisasi bukti pembayaran gagal.',
+            [
+                'file_name' => $safeFileName,
+                'error' => $exception->getMessage(),
+            ]
+        );
+
+        return null;
+    }
+}
 }

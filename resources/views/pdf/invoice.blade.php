@@ -244,8 +244,32 @@
             border-radius: 6px;
             color: #999994;
             font-size: 7px;
+            text-align: center;
+        }
+
+        .signature-placeholder {
+             color: #999994;
+            font-size: 7px;
             line-height: 63px;
             text-align: center;
+        }
+
+        .signature-image {
+            position: relative;
+            z-index: 2;
+            display: block;
+            max-width: 125px;
+            max-height: 55px;
+            margin: 4px auto 0;
+        }
+
+        .stamp-image {
+            position: absolute;
+            z-index: 3;
+            left: -22px;
+            top: 3px;
+            width: 58px;
+            max-height: 58px;
         }
 
         .stamp-placeholder {
@@ -536,12 +560,30 @@
                 </div>
 
                 <div class="signature-area">
-                    AREA TANDA TANGAN
-
-                    @if ($invoice->use_stamp)
-                        <div class="stamp-placeholder">
-                            STEMPEL
+                    @if ($signatureData)
+                        <img
+                            src="{{ $signatureData }}"
+                            class="signature-image"
+                            alt="Tanda tangan direktur"
+                        >
+                    @else
+                        <div class="signature-placeholder">
+                            AREA TANDA TANGAN
                         </div>
+                    @endif
+
+                    @if ($invoice->use_stamp ?? false)
+                        @if ($stampData)
+                            <img
+                                src="{{ $stampData }}"
+                                class="stamp-image"
+                                alt="Stempel perusahaan"
+                            >
+                        @else
+                            <div class="stamp-placeholder">
+                                STEMPEL
+                            </div>
+                        @endif
                     @endif
                 </div>
 

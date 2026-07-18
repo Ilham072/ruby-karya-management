@@ -29,6 +29,12 @@ class DocumentPdfController extends Controller
             'invoice' => $invoice,
             'company' => $company,
             'logoData' => $this->logoData(),
+            'signatureData' => $this->storageImageData(
+                $company?->signature_file_path
+),
+'stampData' => $this->storageImageData(
+    $company?->stamp_file_path
+),
             'terbilang' => NumberToWords::rupiah(
                 $invoice->total_amount
             ),
@@ -100,6 +106,12 @@ class DocumentPdfController extends Controller
             'receipt' => $receipt,
             'company' => $company,
             'logoData' => $this->logoData(),
+            'signatureData' => $this->storageImageData(
+                $company?->signature_file_path
+            ),
+            'stampData' => $this->storageImageData(
+                $company?->stamp_file_path
+            ),
             'terbilang' => NumberToWords::rupiah(
                 $receipt->amount
             ),
@@ -176,6 +188,32 @@ class DocumentPdfController extends Controller
         );
     }
 
+    private function storageImageData(
+        ?string $path
+    ): ?string {
+        if (
+            ! $path
+            || ! Storage::disk('public')->exists($path)
+        ) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+        $contents = $disk->get($path);
+
+        if ($contents === '') {
+            return null;
+        }
+
+        $mimeType = $disk->mimeType($path)
+        ?: 'image/png';
+
+        return sprintf(
+            'data:%s;base64,%s',
+            $mimeType,
+            base64_encode($contents)
+        );
+    }
     private function safeFilename(string $value): string
     {
         return preg_replace(

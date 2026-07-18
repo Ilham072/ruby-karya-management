@@ -197,6 +197,31 @@
             text-align: center;
         }
 
+        .signature-placeholder {
+            color: #999994;
+            font-size: 7px;
+            line-height: 70px;
+            text-align: center;
+        }
+
+        .signature-image {
+            position: relative;
+            z-index: 2;
+            display: block;
+            max-width: 130px;
+            max-height: 61px;
+            margin: 4px auto 0;
+        }
+
+        .stamp-image {
+            position: absolute;
+            z-index: 3;
+            left: -22px;
+            top: 5px;
+            width: 60px;
+            max-height: 60px;
+        }
+
         .stamp-placeholder {
             position: absolute;
             left: -30px;
@@ -394,12 +419,30 @@
                 </div>
 
                 <div class="signature-area">
-                    AREA TANDA TANGAN
-
-                    @if ($receipt->use_stamp)
-                        <div class="stamp-placeholder">
-                            STEMPEL
+                    @if ($signatureData)
+                        <img
+                            src="{{ $signatureData }}"
+                            class="signature-image"
+                            alt="Tanda tangan direktur"
+                        >
+                    @else
+                        <div class="signature-placeholder">
+                            AREA TANDA TANGAN
                         </div>
+                    @endif
+
+                    @if ($receipt->use_stamp ?? false)
+                        @if ($stampData)
+                            <img
+                                src="{{ $stampData }}"
+                                class="stamp-image"
+                                alt="Stempel perusahaan"
+                        >
+                        @else
+                            <div class="stamp-placeholder">
+                                STEMPEL
+                            </div>
+                        @endif
                     @endif
                 </div>
 
